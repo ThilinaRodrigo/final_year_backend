@@ -1,0 +1,49 @@
+name: Backend CD
+
+on:
+  workflow_run:
+    workflows: ["Backend CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Create .env
+        run: |
+          cat <<EOF > .env
+          IMAGE_TAG=${{ github.event.workflow_run.head_sha }}
+          AWS_RDS_DB_URL=${{ secrets.AWS_RDS_DB_URL }}
+          AWS_RDS_DB_USER=${{ secrets.AWS_RDS_DB_USER }}
+          AWS_RDS_DB_PASSWORD=${{ secrets.AWS_RDS_DB_PASSWORD }}
+          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_S3_BUCKET_NAME=${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_S3_EMP_BUCKET_NAME=${{ secrets.AWS_S3_EMP_BUCKET_NAME }}
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          SPRING_REDIS_HOST=redis
+          SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+          EOF
+
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: ".env,docker-compose.yml,nginx/default.conf"
+          target: "~/fabriq-app/"
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd fabriq-app
+            docker compose pull
+            docker compose up -d --remove-orphans
