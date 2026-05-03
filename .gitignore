@@ -54,3 +54,6 @@ build/
 *.pem
 
 kafka_server_jass.conf
+
+devkey
+devkey.pub
