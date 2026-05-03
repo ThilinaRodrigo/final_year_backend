@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HolidayServiceImpl implements HolidayService {
+public class HolidayCountServiceImpl implements HolidayService {
 
     private final AttendanceDao attendanceDao;
     private final HolidayDao holidayDao;

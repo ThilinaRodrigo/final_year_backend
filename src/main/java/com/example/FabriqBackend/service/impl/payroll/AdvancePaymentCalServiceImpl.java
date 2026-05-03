@@ -11,7 +11,7 @@ import java.time.YearMonth;
 
 @Service
 @RequiredArgsConstructor
-public class AdvancePaymentServiceImpl implements AdvancePaymentService {
+public class AdvancePaymentCalServiceImpl implements AdvancePaymentService {
 
     private final AdvancePaymentDao advancePaymentDao;
 

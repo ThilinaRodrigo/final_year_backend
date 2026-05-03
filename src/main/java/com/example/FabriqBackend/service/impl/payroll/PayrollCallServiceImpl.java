@@ -17,7 +17,7 @@ import java.time.YearMonth;
 
 @Service
 @RequiredArgsConstructor
-public class PayrollServiceImpl implements PayrollService {
+public class PayrollCallServiceImpl implements PayrollService {
 
     private final EmployeeDao employeeDao;
     private final PayrollRecordDao payrollRecordDao;
