@@ -28,13 +28,31 @@ jobs:
           SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
           EOF
 
-      - name: Copy files to EC2
+      - name: Copy .env
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "../../.env,../../docker-compose.yml,../../nginx"
+          source: ".env"
+          target: "~/fabriq-app/"
+
+      - name: Copy docker-compose.yml
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "~/fabriq-app/"
+
+      - name: Copy nginx folder
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "nginx"
           target: "~/fabriq-app/"
 
       - name: Deploy
