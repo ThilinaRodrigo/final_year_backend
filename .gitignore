@@ -1,0 +1,56 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.env
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+###Environment Variables ###
+.env
+**/.env
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+application.properties
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+*.tfvars
+
+# Local provider configurations
+.terraform/
+
+# State files (They contain your AWS resource IDs and secrets in plain text)
+*.tfstate
+*.tfstate.backup
+
+# Sensitive variables (Where you might put your actual AWS keys)
+*.tfvars
+*.tfvars.json
+
+# Your private SSH keys
+*.pem
+
+kafka_server_jass.conf

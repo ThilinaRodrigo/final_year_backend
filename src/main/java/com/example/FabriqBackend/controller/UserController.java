@@ -1,0 +1,93 @@
+package com.example.FabriqBackend.controller;
+
+import com.example.FabriqBackend.dto.ChangePasswordDto;
+import com.example.FabriqBackend.model.Login;
+import com.example.FabriqBackend.model.UserPrincipal;
+import com.example.FabriqBackend.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/user")
+@RequiredArgsConstructor
+public class UserController {
+
+
+    private final UserServiceImpl userService;
+
+    @PostMapping("/register")
+    @Operation(
+            summary = "Register a new user",
+            description = "This endpoint allows registering a new user by providing the necessary details in the request body."
+    )
+    public Login register(@RequestBody Login user) {
+        return userService.registerUser(user);
+    }
+
+    @PostMapping("/login")
+    @Operation(
+            summary = "Login an existing user",
+            description = "This endpoint allows an existing user to log in by providing their credentials in the request body."
+    )
+    public ResponseEntity<?> login(@RequestBody Login user, HttpServletRequest request, HttpServletResponse response) {
+        return userService.verify(user, request, response);
+    }
+
+    @GetMapping("/me")
+    @Operation(
+            summary = "Get current user details",
+            description = "This endpoint returns the details of the currently authenticated user."
+    )
+    public Login getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            String username = userPrincipal.getUsername();
+            return userService.getByUsername(username);
+        }
+        throw new RuntimeException("User not authenticated");
+    }
+
+    @PostMapping("/logout")
+    @Operation(
+            summary = "Logout user",
+            description = "This endpoint logs out the user by clearing the JWT token cookie."
+    )
+    public String logout(HttpServletResponse response) {
+        return userService.logout(response);
+    }
+
+    @PostMapping("/refresh")
+    @Operation(
+            summary = "Refresh access token",
+            description = "This endpoint refreshes the access token using a valid refresh token from the cookie."
+    )
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        return userService.refreshAccessToken(request, response);
+    }
+
+    @GetMapping("/token-status")
+    @Operation(
+            summary = "Check token status",
+            description = "This endpoint checks the current access token validity and returns token information."
+    )
+    public ResponseEntity<?> checkTokenStatus(HttpServletRequest request) {
+        return userService.checkTokenStatus(request);
+    }
+
+    @PostMapping("/change-password")
+    @Operation(
+            summary = "Change user password",
+            description = "This endpoint allows the authenticated user to change their password."
+    )
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        return userService.changePassword(changePasswordDto);
+    }
+
+}
