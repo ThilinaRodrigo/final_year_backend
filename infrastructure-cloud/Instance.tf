@@ -5,9 +5,10 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [aws_security_group.backend_sg.id]
   availability_zone      = var.zone1
 
+  user_data = file("${path.module}/scripts/install-docker.sh")
   tags = {
-    Name    = "Dove_web"
-    Project = "Dove"
+    Name    = "backend_dev"
+    Project = "fabriq"
   }
 }
 
