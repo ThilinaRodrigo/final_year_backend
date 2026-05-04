@@ -69,5 +69,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd fabriq-app
-            docker compose pull
+            docker compose pull backend
             docker compose up -d --remove-orphans
