@@ -12,7 +12,7 @@ services:
       - backend
   # Backend
   backend:
-    image: thilinarodrigo/fabriq-backend:latest
+    image: thilinarodrigo/fabriq-backend:${IMAGE_TAG}
     container_name: fabriq-backend
     restart: always
     ports:
