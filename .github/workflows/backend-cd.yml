@@ -69,7 +69,9 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
+          timeout: 30m
+          command_timeout: 30m
           script: |
             cd fabriq-app
-            docker compose pull backend
+            docker compose pull 
             docker compose up -d --remove-orphans
